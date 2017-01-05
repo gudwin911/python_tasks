@@ -1,6 +1,8 @@
 import random
 
+lower_letters = "abcdefghijklmnopqrstuvwxyz"
 upper_letters = lower_letters.upper()
+numbers = "0123456789"
 symbols = "~!@#$%^&*()_+=-\|/,.?<>[]{}:;`\"\' "
 lst =[lower_letters, upper_letters, numbers, symbols]
 
