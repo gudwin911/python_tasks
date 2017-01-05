@@ -1,0 +1,16 @@
+def max_of_three(first, second, third):
+    if second <= first >= third:
+        return first
+    elif first <= second >= third:
+        return second
+    elif first <= third >= second:
+        return third
+    else:
+        return "Something went wrong..."
+
+#print(max_of_three(5, 5, 5))
+
+def max_of_three2(first, second, third):
+    maxi = [first, second, third]
+    maxi.sort()
+    return maxi[2]
