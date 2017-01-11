@@ -2,16 +2,27 @@
 #http://www.practicepython.org/exercise/2014/12/27/24-draw-a-game-board.html
 
 #(I thought we need a square)
-def board_creator1():
-    size = int(input("Enter the game board`s size You want: "))
-    board = []
+size = int(input("Enter the game board`s size You want: "))
 
+def board_printer():
     for i in range(size):
-        board.append([" ---"]*size)
-        board.append(["|   "]*(size+1))
-    board.append([" ---"] * size)
+        print(" ---"*size)
+        print("|   "*(size+1))
+    print(" ---" * size)
 
-    for i in board:
+#board_printer()
+
+#with return lst
+def board_creator():
+    board = []
+    for i in range(size):
+        board.append(" ---"*size)
+        board.append("|   "*(size+1))
+    board.append(" ---" * size)
+    return board
+
+def board_print(board):
+    for i in board_creator():
         print("".join(i))
 
-board_creator1()
+#oard_print(board_creator())
