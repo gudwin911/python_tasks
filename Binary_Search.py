@@ -15,7 +15,7 @@ def number_searcher(lst, num):
 #print(number_searcher(lst, num))
 
 #var2 (with binary search)
-def binary_seacher(lst, num):
+def binary_searcher(lst, num):
     first = 0
     last = len(lst) - 1
 
@@ -30,4 +30,4 @@ def binary_seacher(lst, num):
                 last = mid-1
     return False
 
-print(binary_seacher(lst, num))
+print(binary_searcher(lst, num))
