@@ -15,4 +15,3 @@ class TestClass:
 
     def test_five(self):
         assert binary_searcher(lst, 0)
-
