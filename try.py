@@ -11,7 +11,6 @@ inputElement.send_keys("RYSLINGE")
 inputElement.submit()
 # после этого кода ничего не выполняется/не находится
 # не понимаю, почему, попытка "ждать" в вар 2 тоже ни к чему не приводит, где я ошибаюсь?
-# col-xs-12 col-ms-6 col-sm-4 это название класса контейнера с найденным поиком товаром
 
 """ var 1 - не находит элемент"""
 """outputElement = driver.find_elements(By.ID, "product-list-content")#.count("product-list-content")
