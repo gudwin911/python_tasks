@@ -15,7 +15,7 @@ def ask_password():
         elif choice in ["7", "8", "9", "10", "11", "12", "13", "14"]:
             return int(choice)
         print("Try again")
-        
+
 def random_symbol(lst):
     return random.choice(random.choice(lst))
 
