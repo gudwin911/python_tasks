@@ -60,8 +60,8 @@ def test_jusk4(): # проверяем что в описании есть те�
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     driver.find_element_by_xpath("//img[@alt='Стіл RYSLINGE + 4 стільці RYSLINGE']").click()
     time.sleep(5)
-    elm = driver.find_element_by_xpath("//*[@id='product-description']/div/div/div/div/div/div[1]/div/div[2]/div/div/p/span").text
-    assert 'В комплект входять 2 додаткових "крила"' in elm
+    elm = driver.find_element(By.CLASS_NAME, "product-specs").text
+    assert 'в комплекті з 2 додатковими "крилами"' in elm
     driver.quit()
 
 def test_jusk5(): # проверяем, что есть 4 отзыва вверху
@@ -132,5 +132,6 @@ def test_jusk7(): # залышыты видгук...мем надислаты в
     # жду пока появится еррор-сообщение об обработке личных данных
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "validation-failed")))
-    assert driver.find_element(By.CLASS_NAME, "not-validated")
+    cls = driver.find_element(By.XPATH, "//*[@id='jysk-reviews-add-review-form']/div/div/div[9]").get_attribute("class")
+    assert "not-validated" in cls
     driver.quit()
