@@ -133,6 +133,5 @@ def test_jusk7(): # залышыты видгук...мем надислаты в
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "validation-failed")))
     # пытаюсь полуцчить значение фона у класса не валид, который появляется, но не нахожу....
-    mes = driver.find_element(By.CLASS_NAME, "not-validated").value_of_css_property("background")
-    print(mes)
+    assert driver.find_element(By.CLASS_NAME, "not-validated")
     driver.quit()
