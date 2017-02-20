@@ -100,17 +100,21 @@ def test_jusk7(): # залышыты видгук...мем надислаты в
     inputElement.send_keys("RYSLINGE")
     inputElement.submit()
     #driver.find_element_by_xpath("//*[@id='CookieReportsBanner']/div/div[2]/a").click()
+    # жду пока появится нужная мне имага стола
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//img[@alt='Стіл RYSLINGE + 4 стільці RYSLINGE']")))
     driver.execute_script("window.scrollTo(0, 400);")
     driver.find_element_by_xpath("//*[@id='node-272253']/figure/a/img").click()
+    # жду перехода страницу со столом
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")))
     driver.execute_script("window.scrollTo(0, 900);")
+    # жму на вкладку "отзывы" внизу, жду пока вкладка откроется и жму "оставить отзыв"
     driver.find_element_by_xpath("//*[@id='content-tab-bar']/li[2]/a").click()
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//*[@id='product-ratings']/div/div/div/div/div/a")))
     driver.find_element_by_xpath("//*[@id='product-ratings']/div/div/div/div/div/a").click()
+    # заполняем форму
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID,"edit-title")))
     driver.find_element(By.XPATH, "//*[@id='rating-select']/div/span[5]").click()
@@ -123,9 +127,12 @@ def test_jusk7(): # залышыты видгук...мем надислаты в
     driver.find_element_by_xpath("//*[@id='edit-sex']/option[2]").click()
     driver.find_element_by_id("edit-city").send_keys("Detroit")
     driver.find_element_by_id("edit-email").send_keys("checkount@gmail.com")
+    # отправляю отзыв, не подтвердив обработку личных данных
     driver.find_element_by_id("edit-submit--5").submit()
+    # жду пока появится еррор-сообщение об обработке личных данных
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "validation-failed")))
+    # пытаюсь полуцчить значение фона у класса не валид, который появляется, но не нахожу....
     mes = driver.find_element(By.CLASS_NAME, "not-validated").value_of_css_property("background")
     print(mes)
     driver.quit()
