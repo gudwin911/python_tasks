@@ -132,6 +132,5 @@ def test_jusk7(): # залышыты видгук...мем надислаты в
     # жду пока появится еррор-сообщение об обработке личных данных
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "validation-failed")))
-    # пытаюсь полуцчить значение фона у класса не валид, который появляется, но не нахожу....
     assert driver.find_element(By.CLASS_NAME, "not-validated")
     driver.quit()
