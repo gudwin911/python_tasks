@@ -1,5 +1,4 @@
 from python_tasks import Page
-from python_tasks import locators
 import pytest
 # class s():
 #     def testy(self):
