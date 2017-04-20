@@ -1,4 +1,6 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class BasePage(object):
@@ -24,9 +26,15 @@ class HomePage(BasePage):
 
 
 class SearchResultPage(BasePage):
+
+    def count_products(self, param1):
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//img[@alt='%s']" % param1)))
+        return len(self.driver.find_elements(By.CLASS_NAME, "product"))
+
     def to_product(self, param1):
         self.scroll_down(400)
-        self.driver.find_element(By.XPATH, param1).click()
+        self.driver.find_element(By.XPATH, "//img[@alt='%s']" % param1).click()
         return ProductPage(self.driver)
 
 

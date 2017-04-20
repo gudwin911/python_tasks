@@ -3,11 +3,21 @@ import pytest
 
 
 class Test():
+    name = "Стіл RYSLINGE + 4 стільці RYSLINGE"
+    query = "RYSLINGE"
+
+    def test_check_product_quantity(self, driver):
+        product_quantity = Page.HomePage(driver).\
+            search(self.query).\
+            count_products(self.name)
+        assert product_quantity == 8
+
     def test_check_product_name(self, driver):
-        home = Page.HomePage(driver)
-        result = home.search("RYSLINGE")
-        product_page = result.to_product("//img[@alt='Стіл RYSLINGE + 4 стільці RYSLINGE']")
-        assert "Стіл RYSLINGE + 4 стільці RYSLINGE" in product_page.product_name()
+        product_name = Page.HomePage(driver).\
+            search(self.query).\
+            to_product(self.name).\
+            product_name()
+        assert self.name in product_name
 
 if __name__ == "__main__":
     pytest.main()
