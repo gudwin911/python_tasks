@@ -1,8 +1,7 @@
 from python_tasks import Page
-from python_tasks import locators
 
 class s():
-    def testy(self):
+    def test_y(self):
         page = Page.HomePage
         page.get_search_field().send_keys("RYSLINGE").submit()
         page = Page.SearchResultPage
