@@ -3,66 +3,60 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import pytest
+from python_tasks import locators
 
 
-class HomePage():
+class BasePage():
+    def __init__(self, driver):
+        self.driver = driver
+
+    def get_search_field(self):
+        return self.driver.find_element(By.NAME("query"))
+
+    def scroll_down(self, num):
+        self.driver.execute_script("window.scrollTo(0, %s);" % num)
+
+class HomePage(BasePage):
     def __init__(self, driver):
         self.driver = driver
         self.driver.get("https://jysk.ua")
 
-    def get_search_field(self):
-        return self.driver.find_element_by_name("query")
+class SearchResultPage(BasePage):
 
-    def input_text_in_search_field(self):
-        self.get_search_field().send_keys("RYSLINGE")
-
-    def submit_data_from_search_field(self):
-        self.get_search_field().submit()
-
-
-class SearchResultPage():
-    def __init__(self, driver):
-        self.driver = driver
-
-    def wait_for_search_result(self):
+    def wait_search_result(self):
         WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//img[@alt='Стіл RYSLINGE + 4 стільці RYSLINGE']")))
+            EC.visibility_of_element_located((By.CLASS_NAME, "view-header")))
 
-    def scroll_down_400(self):
-        self.driver.execute_script("window.scrollTo(0, 400);")
+    def get_products(self):
+        return self.driver.find_elements(By.CLASS_NAME, "product")
 
-    def get_some_product_img(self):
-        return self.driver.find_element(By.XPATH, "//*[@id='node-272253']/figure/a/img")
+    def get_product_img(self):
+         return self.driver.find_element(By.XPATH, "//div[@class='col-ms-6']//img[1]")
 
-    def click_on_product_img(self):
-        self.get_some_product_img().click()
+class ProductPage(BasePage):
+    def get_product_name(self):
+        return self.driver.find_element(By.CLASS_NAME, "widgets-enabled").text
 
+    def get_product_specs(self):
+        return self.driver.find_element(By.CLASS_NAME, "product-specs").text
 
-class ProductPage():
-    def __init__(self, driver):
-        self.driver = driver
 
     def wait_for_content_download(self):
         WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")))
-
-    def scroll_down_900(self):
-        self.driver.execute_script("window.scrollTo(0, 900);")
 
     def get_reviews_button(self):
         return self.driver.find_element(By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")
 
     def wait_for_reviews_tab_visibility(self):
         WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.id, "product-ratings")))
+            EC.visibility_of_element_located((By.ID, "product-ratings")))
 
     def get_new_review_button(self):
-        return self.driver.find_element(By.id, "product-ratings")
+        return self.driver.find_element(By.ID, "product-ratings")
 
 
-class ReviewPage():
-    def __init__(self, driver):
-        self.driver = driver
+class ReviewPage(BasePage):
 
     def wait_for_content_download(self):
         WebDriverWait(self.driver, 10).until(
