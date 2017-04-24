@@ -41,3 +41,18 @@ class SearchResultPage(BasePage):
 class ProductPage(BasePage):
     def product_name(self):
         return self.driver.find_element(By.CLASS_NAME, "widgets-enabled").text
+
+    def product_description(self):
+        return self.driver.find_element(By.CSS_SELECTOR, "span[itemprop='description']").text
+
+    def header_review_quantity(self):
+        return self.driver.find_element_by_class_name("review-count").text
+
+    def open_reviews(self):
+        self.scroll_down(900)
+        self.driver.find_element_by_xpath("//*[@id='content-tab-bar']/li[2]/a").click()
+
+    def reviews_count(self):
+        self.scroll_down(900)
+        self.driver.find_element_by_xpath("//*[@id='content-tab-bar']/li[2]/a").click()
+        return len(self.driver.find_elements_by_class_name("field-content"))
