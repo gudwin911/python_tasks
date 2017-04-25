@@ -30,26 +30,17 @@ class Test():
 
     # 2 проверяем что вверху верно отображено название
     def test_check_product_name(self, driver):
-        product_name = Page.HomePage(driver).\
-            search(self.query).\
-            to_product(self.name).\
-            product_name()
+        product_name = self.product_page(driver).product_name()
         assert self.name in product_name
 
     # 3 проверяем что в описании есть текст “В комплект входять 2 додаткових 'крила'"
     def test_check_product_description(self, driver):
-        description = Page.HomePage(driver).\
-            search(self.query).\
-            to_product(self.name).\
-            product_description()
+        description = self.product_page(driver).product_description()
         assert "В комплект входять 2 додаткових 'крила'" in description
 
     # 4 проверяем, что есть 4 отзыва вверху
     def test_check_reviews_quantity_up_page(self, driver):
-        quantity = Page.HomePage(driver).\
-            search(self.query).\
-            to_product(self.name).\
-            header_review_quantity()
+        quantity = self.product_page(driver).header_review_quantity()
         assert quantity == "4 відгуків"
 
     # 5 проверяем, что есть 4 отзыва, если нажать на видугки внизу
