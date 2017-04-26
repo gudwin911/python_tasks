@@ -7,7 +7,7 @@ from time import sleep
 class BasePage(object):
     def __init__(self, driver):
         self.driver = driver
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
 
     def scroll_down(self, num):
         self.driver.execute_script("window.scrollTo(0, %s);" % num)
@@ -18,8 +18,14 @@ class BasePage(object):
         txt.submit()
         return SearchResultPage(self.driver)
 
-    def wait_visibility(self, locator, attribute):
-        WebDriverWait(self.driver, 10).until(
+    def wait_to_be_clickable(self, locator, attribute):
+        self.driver.implicitly_wait(30)
+        WebDriverWait(self.driver, 30).until(
+            EC.element_to_be_clickable((locator, "%s" % attribute)))
+
+    def wait_to_be_visible(self, locator, attribute):
+        self.driver.implicitly_wait(30)
+        WebDriverWait(self.driver, 30).until(
             EC.visibility_of_element_located((locator, "%s" % attribute)))
 
 
@@ -27,23 +33,25 @@ class HomePage(BasePage):
     def __init__(self, driver):
         self.driver = driver
         self.driver.get("https://jysk.ua")
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(30)
         self.driver.find_element(By.XPATH, "//*[@id='CookieReportsBanner']/div/div[2]/a").click()
 
 
 class SearchResultPage(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        self.wait_visibility(By.XPATH, "//*[@id='product-list-content']/div[3]")
+        self.driver.implicitly_wait(30)
+        self.wait_to_be_visible(By.XPATH, "//*[@id='product-list-content']/div[3]")
 
     def count_products(self, param1):
-        self.wait_visibility(By.XPATH, '//img[@alt="%s"]' % param1)
+        self.wait_to_be_clickable(By.XPATH, '//img[@alt="%s"]' % param1)
         return len(self.driver.find_elements(By.CLASS_NAME, "product"))
 
     def to_product(self, param1):
         self.scroll_down(400)
-        # self.wait_visibility(By.XPATH, '//img[@alt="%s"]' % param1))
-        sleep(3)
+        self.wait_to_be_visible(By.XPATH, '//img[@alt="%s"]' % param1)
+        self.wait_to_be_clickable(By.XPATH, '//img[@alt="%s"]' % param1)
+        sleep(1)
         self.driver.find_element(By.XPATH, '//img[@alt="%s"]' % param1).click()
         return ProductPage(self.driver)
 
@@ -51,7 +59,7 @@ class SearchResultPage(BasePage):
 class ProductPage(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        self.wait_visibility(By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")
+        self.wait_to_be_clickable(By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")
 
     def product_name(self):
         return self.driver.find_element(By.CLASS_NAME, "widgets-enabled").text
@@ -71,7 +79,7 @@ class ProductPage(BasePage):
 class ProductPageReviewBlock(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        self.wait_visibility(By.XPATH, '//a[@href="#notification"]')
+        self.wait_to_be_clickable(By.XPATH, '//a[@href="#notification"]')
 
     def reviews_count(self):
         return len(self.driver.find_elements(By.CLASS_NAME, "field-content"))
@@ -84,8 +92,9 @@ class ProductPageReviewBlock(BasePage):
 class ReviewPage(BasePage):
     def __init__(self, driver):
         self.driver = driver
-        # self.wait_visibility(By.ID, "edit-title")
-        sleep(3)
+        self.wait_to_be_visible(By.ID, "edit-title")
+        self.wait_to_be_clickable(By.ID, "edit-title")
+        sleep(1)
 
     def select_rating(self, num):
         self.driver.find_element(By.XPATH, '//*[@id="rating-select"]/div/span[%s]' % num).click()
@@ -134,6 +143,6 @@ class ReviewPage(BasePage):
         return ReviewPage(self.driver)
 
     def get_error_msg_class(self):
-        self.wait_visibility(By.CLASS_NAME, "validation-failed")
+        self.wait_to_be_visible(By.CLASS_NAME, "validation-failed")
         return self.driver.find_element(By.XPATH, "//*[@id='jysk-reviews-add-review-form']/div/div/div[9]").\
             get_attribute("class")
