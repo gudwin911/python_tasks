@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from time import sleep
 
 
 class BasePage(object):
@@ -17,33 +18,46 @@ class BasePage(object):
         txt.submit()
         return SearchResultPage(self.driver)
 
+    def wait_visibility(self, locator, attribute):
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((locator, "%s" % attribute)))
+
 
 class HomePage(BasePage):
     def __init__(self, driver):
         self.driver = driver
         self.driver.get("https://jysk.ua")
         self.driver.implicitly_wait(10)
+        self.driver.find_element(By.XPATH, "//*[@id='CookieReportsBanner']/div/div[2]/a").click()
 
 
 class SearchResultPage(BasePage):
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait_visibility(By.XPATH, "//*[@id='product-list-content']/div[3]")
 
     def count_products(self, param1):
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//img[@alt='%s']" % param1)))
+        self.wait_visibility(By.XPATH, '//img[@alt="%s"]' % param1)
         return len(self.driver.find_elements(By.CLASS_NAME, "product"))
 
     def to_product(self, param1):
         self.scroll_down(400)
-        self.driver.find_element(By.XPATH, "//img[@alt='%s']" % param1).click()
+        # self.wait_visibility(By.XPATH, '//img[@alt="%s"]' % param1))
+        sleep(3)
+        self.driver.find_element(By.XPATH, '//img[@alt="%s"]' % param1).click()
         return ProductPage(self.driver)
 
 
 class ProductPage(BasePage):
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait_visibility(By.XPATH, "//*[@id='content-tab-bar']/li[2]/a")
+
     def product_name(self):
         return self.driver.find_element(By.CLASS_NAME, "widgets-enabled").text
 
     def product_description(self):
-        return self.driver.find_element(By.CSS_SELECTOR, "span[@itemprop='description']").text
+        return self.driver.find_element(By.XPATH, '//span[@itemprop="description"]').text
 
     def header_review_quantity(self):
         return self.driver.find_element(By.CLASS_NAME, "review-count").text
@@ -51,19 +65,30 @@ class ProductPage(BasePage):
     def open_reviews(self):
         self.scroll_down(900)
         self.driver.find_element(By.XPATH, "//*[@id='content-tab-bar']/li[2]/a").click()
+        return ProductPageReviewBlock(self.driver)
+
+
+class ProductPageReviewBlock(BasePage):
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait_visibility(By.XPATH, '//a[@href="#notification"]')
 
     def reviews_count(self):
         return len(self.driver.find_elements(By.CLASS_NAME, "field-content"))
 
     def btn_write_review(self):
-        self.driver.find_element(By.XPATH, "//a[@href='#notification']").click()
+        self.driver.find_element(By.XPATH, '//a[@href="#notification"]').click()
         return ReviewPage(self.driver)
 
 
 class ReviewPage(BasePage):
+    def __init__(self, driver):
+        self.driver = driver
+        # self.wait_visibility(By.ID, "edit-title")
+        sleep(3)
 
     def select_rating(self, num):
-        self.driver.find_element(By.XPATH, "//*[@id='rating-select']/div/span[%s]" % num).click()
+        self.driver.find_element(By.XPATH, '//*[@id="rating-select"]/div/span[%s]' % num).click()
 
     def add_title(self, txt):
         self.driver.find_element(By.ID, "edit-title").send_keys(txt)
@@ -88,27 +113,27 @@ class ReviewPage(BasePage):
     def add_mail(self, mail):
         self.driver.find_element(By.ID, "edit-email").send_keys(mail)
 
-    def edit_accept_terms(self, bool):
-        if bool:
+    def edit_accept_terms(self, yes):
+        if yes:
             self.driver.find_element(By.ID, "edit-accept-terms").click()
 
     def send_review(self):
-        self.driver.find_element(By.ID, "edit-submit").submit()
+        self.driver.find_element(By.ID, "edit-submit").click()
 
     def add_review(self, rating, title, txt, author, age, sex, city, mail, box):
-        self.select_rating(rating).\
-            add_title(title).\
-            add_comment(txt).\
-            add_author(author).\
-            select_age(age).\
-            select_sex(sex).\
-            add_city(city).\
-            add_mail(mail).\
-            edit_accept_terms(box).\
-            send_review()
+        self.select_rating(rating)
+        self.add_title(title)
+        self.add_comment(txt)
+        self.add_author(author)
+        self.select_age(age)
+        self.select_sex(sex)
+        self.add_city(city)
+        self.add_mail(mail)
+        self.edit_accept_terms(box)
+        self.send_review()
+        return ReviewPage(self.driver)
 
     def get_error_msg_class(self):
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "validation-failed")))
+        self.wait_visibility(By.CLASS_NAME, "validation-failed")
         return self.driver.find_element(By.XPATH, "//*[@id='jysk-reviews-add-review-form']/div/div/div[9]").\
             get_attribute("class")
